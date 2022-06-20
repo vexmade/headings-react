@@ -39,7 +39,7 @@ const toMock: Record<string, PackageMeta> = {
     packages: {
       '18.0.0': '@testing-library/react',
       '17.0.2': '@testing-library/react17',
-      '16.13.0': '@testing-library/react16',
+      '16.13.0': '@testing-library/react17',
     },
     versionName: 'REACT_VERSION',
   }
