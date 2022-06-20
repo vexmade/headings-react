@@ -1,0 +1,18 @@
+name: Jest Tests
+on: [push]
+jobs:
+  node-18:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        react: [ '16.13.0', '17.0.2', '18.0.0' ]
+    name: Tests - React ${{ matrix.react }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: yarn
+      - run: yarn test
+        env:
+          REACT_VERSION: ${{ matrix.react }}
