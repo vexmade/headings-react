@@ -1,18 +1,40 @@
 name: Jest Tests
 on: [push]
 jobs:
-  node-18:
+  node:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        react: [ '16.13.0', '17.0.2', '18.0.0' ]
+        react: [ '18.0.0', '17.0.2', '16.13.0' ]
     name: Tests - React ${{ matrix.react }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: yarn test
         env:
           REACT_VERSION: ${{ matrix.react }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-${{ matrix.react }}
+          path: coverage
+          retention-days: 1
+  sonarcloud:
+    name: SonarCloud
+    needs:
+      - node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-${{ jobs.node.strategy.matrix.react[0] }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
