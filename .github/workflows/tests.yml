@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - uses: actions/download-artifact@v3
         with:
-          name: coverage-${{ jobs.node.strategy.matrix.react[0] }}
+          name: coverage-${{ needs.node.strategy.matrix.react[0] }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
