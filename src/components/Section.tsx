@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type ReactNode, useCallback, useEffect } from 'react';
+import { type HTMLAttributes, type ReactNode, useCallback, useEffect, useMemo } from 'react';
 
 import { SectionContext, useHeadings, useSectionContext } from '~/hooks';
 import { throwIfAllowed } from '~/lib';
@@ -25,6 +25,11 @@ export const Section = ({ children, offset = 0, onMissingHeading, ...props }: Se
     [dispatch],
   );
 
+  const contextValue = useMemo(
+    () => ({ addHeading, headings, id, level: level + 1 + offset }),
+    [addHeading, headings, id, level, offset],
+  );
+
   useEffect(() => {
     dispatch({
       type: 'loaded',
@@ -39,7 +44,7 @@ export const Section = ({ children, offset = 0, onMissingHeading, ...props }: Se
   });
 
   return (
-    <SectionContext.Provider value={{ addHeading, headings, id, level: level + 1 + offset }}>
+    <SectionContext.Provider value={contextValue}>
       <section {...props} aria-labelledby={id ?? undefined}>
         {children}
       </section>
