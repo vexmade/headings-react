@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
-import { H, Section, SectionContext } from '~/index';
+import { H, Section } from '~/index';
 
 it('renders h1 by default', () => {
   render(<H>Some Text</H>);
@@ -8,7 +8,6 @@ it('renders h1 by default', () => {
   const component = screen.getByText('Some Text');
 
   expect(component.tagName.toLowerCase()).toBe('h1');
-  expect(component).not.toHaveAttribute('id');
 });
 
 it.each`
@@ -22,7 +21,6 @@ it.each`
   const component = screen.getByText('Some Text');
 
   expect(component.tagName.toLowerCase()).toBe(tagName);
-  expect(component).not.toHaveAttribute('id');
   if (checkLevel) {
     expect(component).toHaveAttribute('aria-level', `${level}`);
   }
@@ -38,82 +36,83 @@ it.each`
   const component = screen.getByText('Some Text');
 
   expect(component.tagName.toLowerCase()).toBe(tagName);
-  expect(component).not.toHaveAttribute('id');
   if (checkLevel) {
     expect(component).toHaveAttribute('aria-level', `${offset + 1}`);
   }
 });
 
-it('defaults to h1 when wrapped with one Section', () => {
-  let autoId;
-
+it('defaults to h1 when wrapped with one Section', async () => {
   render(
     <Section>
       <H>Some Text</H>
-      <SectionContext.Consumer>
-        {({ id }) => {
-          autoId = id;
-
-          return null;
-        }}
-      </SectionContext.Consumer>
     </Section>,
   );
 
   const component = screen.getByText('Some Text');
   const section = component.closest('section') as HTMLElement;
 
+  await waitFor(() => {
+    expect(component.id).toBeTruthy();
+  });
+
   expect(component.tagName.toLowerCase()).toBe('h1');
-  expect(component).toHaveAttribute('id', autoId);
-  expect(section).toHaveAttribute('aria-labelledby', autoId);
+  expect(component).toHaveAttribute('id');
+  expect(section).toHaveAttribute('aria-labelledby', component.id);
 });
 
-it('only associates the first H to the parent Section', () => {
-  let autoId;
-
+it('associates the first H to the parent Section by default', () => {
   render(
     <Section>
       <H>Some Text</H>
       <H>Another Heading</H>
-      <SectionContext.Consumer>
-        {({ id }) => {
-          autoId = id;
-
-          return null;
-        }}
-      </SectionContext.Consumer>
     </Section>,
   );
 
   const headingWithId = screen.getByText('Some Text');
   const headingWithoutId = screen.getByText('Another Heading');
+  const section = headingWithId.closest('section');
 
-  expect(headingWithId).toHaveAttribute('id', autoId);
-  expect(headingWithoutId).not.toHaveAttribute('id');
+  expect(headingWithId).toBeInTheDocument();
+  expect(headingWithoutId).toBeInTheDocument();
+  expect(section).toHaveAttribute('aria-labelledby', headingWithId.id);
 });
 
-it('can have a custom prefix for the id', () => {
-  let autoId = '';
-  const idPrefix = 'my-prefix-';
-
+it('allows for a specific H to be associated to the parent Section', () => {
   render(
-    <Section idPrefix={idPrefix}>
-      <H>Some Text</H>
-      <SectionContext.Consumer>
-        {({ id }) => {
-          autoId = id || '';
-
-          return null;
-        }}
-      </SectionContext.Consumer>
+    <Section>
+      <H>Not Associated</H>
+      <H sectionLabel>Associated</H>
     </Section>,
   );
 
-  const component = screen.getByText('Some Text');
+  const associatedHeading = screen.getByText('Associated');
+  const notAssociatedHeading = screen.getByText('Not Associated');
+  const section = associatedHeading.closest('section');
 
-  expect(component).toHaveAttribute('id', autoId);
-  expect(autoId).toContain(idPrefix);
-  expect(autoId.indexOf(idPrefix)).toBe(0);
+  expect(associatedHeading).toBeInTheDocument();
+  expect(notAssociatedHeading).toBeInTheDocument();
+  expect(section).toHaveAttribute('aria-labelledby', associatedHeading.id);
+});
+
+it('only associates the first specific H to the parent Section', () => {
+  render(
+    <Section>
+      <H>Not Associated 1</H>
+      <H sectionLabel>Associated</H>
+      <H sectionLabel>Not Associated 2</H>
+    </Section>,
+  );
+
+  const associatedHeading = screen.getByText('Associated');
+  const notAssociated1 = screen.getByText('Not Associated 1');
+  const notAssociated2 = screen.getByText('Not Associated 2');
+  const section = associatedHeading.closest('section');
+
+  expect(associatedHeading).toBeInTheDocument();
+  expect(notAssociated1).toBeInTheDocument();
+  expect(notAssociated2).toBeInTheDocument();
+  expect(section).not.toHaveAttribute('aria-labelledby', notAssociated2.id);
+  expect(section).toHaveAttribute('aria-labelledby', associatedHeading.id);
 });
 
 it('is offset by the amount of ancestor Sections', () => {
@@ -169,7 +168,7 @@ describe('Error Handling', () => {
   let oldThrowErrors = process.env.HEADINGS_THROW_ERRORS;
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    jest.clearAllMocks();
     oldNodeEnv = process.env.NODE_ENV;
     oldThrowErrors = process.env.HEADINGS_THROW_ERRORS;
     mockConsoleError = getConsoleErrorMock();
