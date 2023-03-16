@@ -12,7 +12,7 @@ export default {
   verbose: true,
 
   collectCoverage: true,
-  collectCoverageFrom: ['<rootDir>/src/**/*.{ts,tsx}', '!**/*.test.{ts,tsx}'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.{ts,tsx}', '!**/*.{spec,test}.{ts,tsx}'],
   coverageDirectory: '<rootDir>/coverage',
-  coverageReporters: ['text', 'html'],
+  coverageReporters: ['lcov', 'text'],
 };
