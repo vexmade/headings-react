@@ -5,15 +5,16 @@ import { useSectionContext } from '~/hooks';
 
 interface HProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
+  idPrefix?: string;
   level?: number;
   offset?: number;
   sectionLabel?: boolean;
 }
 
-export const H = ({ children, id, level = undefined, offset = 0, sectionLabel, ...props }: HProps) => {
+export const H = ({ children, id, idPrefix = '', level = undefined, offset = 0, sectionLabel, ...props }: HProps) => {
   const { addHeading, level: contextLevel } = useSectionContext();
 
-  const levelToUse = Math.max(1, level ?? contextLevel) + offset;
+  const levelToUse = Math.max(1, level ?? contextLevel) + Math.max(0, offset);
 
   const Heading = (levelToUse > 6 ? 'div' : `h${levelToUse}`) as keyof Pick<
     JSX.IntrinsicElements,
@@ -21,11 +22,12 @@ export const H = ({ children, id, level = undefined, offset = 0, sectionLabel, .
   >;
   const ariaLevel = levelToUse > 6 ? levelToUse : undefined;
 
-  const autoId = useId();
-  const myId = id ?? (autoId || '');
+  const myId = `${idPrefix}${useId(id)}`;
 
   useEffect(() => {
-    addHeading(myId, sectionLabel);
+    if (myId) {
+      addHeading(myId, sectionLabel);
+    }
   }, []);
 
   return (

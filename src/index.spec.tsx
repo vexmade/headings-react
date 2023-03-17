@@ -26,6 +26,14 @@ it.each`
   }
 });
 
+it('forces level to be 1 or greater', () => {
+  render(<H level={-2}>Some Text</H>);
+
+  const component = screen.getByText('Some Text');
+
+  expect(component.tagName.toLowerCase()).toBe('h1');
+});
+
 it.each`
   offset | tagName  | checkLevel
   ${1}   | ${'h2'}  | ${false}
@@ -39,6 +47,34 @@ it.each`
   if (checkLevel) {
     expect(component).toHaveAttribute('aria-level', `${offset + 1}`);
   }
+});
+
+it('forces the offset to be 0 or greater', () => {
+  render(<H offset={-2}>Some Text</H>);
+
+  const component = screen.getByText('Some Text');
+
+  expect(component.tagName.toLowerCase()).toBe('h1');
+});
+
+it('can customize the id', () => {
+  render(
+    <>
+      <H id="fixed-id">Fixed ID Heading</H>
+      <H idPrefix="prefixed-">Prefixed Dynamic ID Heading</H>
+      <H id="fixed" idPrefix="prefixed-and-">
+        Prefixed and Fixed ID Heading
+      </H>
+    </>,
+  );
+
+  const fixedIdHeading = screen.getByText('Fixed ID Heading');
+  const prefixedIdHeading = screen.getByText('Prefixed Dynamic ID Heading');
+  const prefixedFixedIdHeading = screen.getByText('Prefixed and Fixed ID Heading');
+
+  expect(fixedIdHeading).toHaveAttribute('id', 'fixed-id');
+  expect(prefixedIdHeading).toHaveAttribute('id', expect.stringMatching('prefixed-'));
+  expect(prefixedFixedIdHeading).toHaveAttribute('id', 'prefixed-and-fixed');
 });
 
 it('defaults to h1 when wrapped with one Section', async () => {
