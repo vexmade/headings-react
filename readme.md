@@ -1,6 +1,6 @@
 # Headings
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vexstudios_headings-react&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vexmade_headings-react)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vexmade_headings-react&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vexmade_headings-react)
 
 A React package to handle a11y friendly dynamic `section`/`h#` generation.
 
