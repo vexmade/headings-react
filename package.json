@@ -9,9 +9,6 @@
     "node": ">=14"
   },
   "exports": "./dist/index.js",
-  "files": [
-    "./dist/**/*"
-  ],
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "yarn clean && rollup -c",
