@@ -6,9 +6,12 @@
 
     "strict": true,
     "declaration": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {

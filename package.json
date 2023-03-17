@@ -8,7 +8,7 @@
   "engines": {
     "node": ">=14"
   },
-  "exports": "./dist/index.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "yarn clean && rollup -c",
@@ -24,12 +24,11 @@
     "version": "yarn format && git add -A ./src",
     "test": "yarn node --experimental-vm-modules --no-warnings $(yarn bin jest)"
   },
-  "dependencies": {
-    "@reach/auto-id": "^0.18.0"
-  },
   "devDependencies": {
+    "@reach/auto-id": "^0.16.0",
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^14.0.0",
@@ -51,10 +50,13 @@
     "react16": "npm:react@16.13.0",
     "react17": "npm:react@^17.0.2",
     "rollup": "^3.19.1",
+    "rollup-plugin-dts": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-jest": "^29.0.5",
     "typescript": "^5.0.2"
   },
   "peerDependencies": {
+    "@reach/auto-id": "^0.16.0",
     "react": "^16.13.0 || ^17.0.2 || ^18.0.0",
     "react-dom": "^16.13.0 || ^17.0.2 || ^18.0.0"
   }
