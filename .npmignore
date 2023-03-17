@@ -1,7 +1,12 @@
+.github/
+.idea/
 coverage/
 node_modules/
 src/
 test/
+.editorconfig
+.eslintrc.cjs
+.prettierrc.cjs
 jest.config.js
 rollup.config.js
 sonar-project.properties
