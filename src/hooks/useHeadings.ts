@@ -1,7 +1,6 @@
 import { type Reducer, useReducer } from 'react';
 
 interface HeadingReducerState {
-  customSet: boolean;
   headings: string[] | null;
   id: string | null;
   loaded: boolean;
@@ -27,8 +26,7 @@ export const useHeadings = () =>
           return {
             ...state,
             headings: [...(state.headings ?? []), action.id],
-            ...(state.id || state.customSet ? {} : { id: action.id }),
-            ...(action.sectionLabel && !state.customSet ? { customSet: true, id: action.id } : {}),
+            ...(action.sectionLabel && !state.id ? { id: action.id } : {}),
           };
 
         case 'loaded':
@@ -43,7 +41,6 @@ export const useHeadings = () =>
       return state;
     },
     {
-      customSet: false,
       headings: null,
       id: null,
       loaded: false,

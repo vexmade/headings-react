@@ -92,25 +92,7 @@ it('defaults to h1 when wrapped with one Section', async () => {
   });
 
   expect(component.tagName.toLowerCase()).toBe('h1');
-  expect(component).toHaveAttribute('id');
-  expect(section).toHaveAttribute('aria-labelledby', component.id);
-});
-
-it('associates the first H to the parent Section by default', () => {
-  render(
-    <Section>
-      <H>Some Text</H>
-      <H>Another Heading</H>
-    </Section>,
-  );
-
-  const headingWithId = screen.getByText('Some Text');
-  const headingWithoutId = screen.getByText('Another Heading');
-  const section = headingWithId.closest('section');
-
-  expect(headingWithId).toBeInTheDocument();
-  expect(headingWithoutId).toBeInTheDocument();
-  expect(section).toHaveAttribute('aria-labelledby', headingWithId.id);
+  expect(section).not.toHaveAttribute('aria-labelledby');
 });
 
 it('allows for a specific H to be associated to the parent Section', () => {
