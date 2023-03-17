@@ -27,8 +27,10 @@
     "version": "yarn format && git add -A ./src",
     "test": "yarn node --experimental-vm-modules --no-warnings $(yarn bin jest)"
   },
+  "dependencies": {
+    "@reach/auto-id": "^0.18.0"
+  },
   "devDependencies": {
-    "@reach/auto-id": "^0.18.0",
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-typescript": "^11.0.0",
@@ -56,7 +58,6 @@
     "typescript": "^5.0.2"
   },
   "peerDependencies": {
-    "@reach/auto-id": "^0.16.0",
     "react": "^16.13.0 || ^17.0.2 || ^18.0.0",
     "react-dom": "^16.13.0 || ^17.0.2 || ^18.0.0"
   }
